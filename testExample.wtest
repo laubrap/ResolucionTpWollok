@@ -1,9 +1,174 @@
-import example.pepita
+import example.*
 
-describe "group of tests for pepita" {
-
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+describe "tests Guitarra Fender" {
+  test "una guitarra fender esta afinada" {
+    assert.that(guitarraFenderStratocaster.estaAfinado())
   }
+  test "una guitarra fender de un color caro tiene un costo elevado" {
+    assert.equals(15, guitarraFenderStratocaster.costo())
+  }
+  test "una guitarra fender de un color barato tiene un costo bajo" {
+    guitarraFenderStratocaster.color("rojo")
+    assert.equals(10, guitarraFenderStratocaster.costo())
+  }
+  test "una guitarra fender es valiosa" {
+    assert.that(guitarraFenderStratocaster.esValioso())
+  }
+}
 
+describe "tests Trompeta Jupiter" {
+  test "Una trompeta jupiter con una temperatura baja pero dentro del intervalo esta afinada" {
+    trompetaJupiter.temperatura(20)
+    assert.that(trompetaJupiter.estaAfinado())
+  }
+  test "Una trompeta jupiter con una temperatura alta pero dentro del intervalo esta afinada" {
+    trompetaJupiter.temperatura(25)
+    assert.that(trompetaJupiter.estaAfinado())
+  }
+  test "Una trompeta jupiter con una temperatura baja pero fuera del intervalo no esta afinada" {
+    trompetaJupiter.temperatura(19)
+    assert.notThat(trompetaJupiter.estaAfinado())
+  }
+  test "Una trompeta jupiter con una temperatura alta pero fuera del intervalo no esta afinada" {
+    trompetaJupiter.temperatura(26)
+    assert.notThat(trompetaJupiter.estaAfinado())
+  }
+  test "Una trompeta jupiter con una temperatura baja, si hacemos el calentamiento, pasa a estar afinada" {
+    trompetaJupiter.temperatura(19)
+    trompetaJupiter.hacerCalentamiento()
+    assert.that(trompetaJupiter.estaAfinado())
+  }
+  test "Una trompeta jupiter sin sordina cuesta un monto bajo" {
+    trompetaJupiter.sordina(false)
+    assert.equals(30, trompetaJupiter.costo())
+  }
+  test "Una trompeta jupiter con sordina cuesta un monto alto" {
+    trompetaJupiter.sordina(true)
+    assert.equals(35, trompetaJupiter.costo())
+  }
+  test "Una trompeta jupiter no es valiosa" {
+    trompetaJupiter.sordina(true)
+    assert.notThat(trompetaJupiter.esValioso())
+  }
+}
+
+describe "tests Piano Bechstein" {
+  test "un piano en una habitacion grande esta afinado" {
+    pianoBechstein.anchoHabitacion(5)
+    pianoBechstein.largoHabitacion(5)
+    assert.that(pianoBechstein.estaAfinado())
+  }
+  test "un piano en una habitacion chica no esta afinado" {
+    pianoBechstein.anchoHabitacion(4)
+    pianoBechstein.largoHabitacion(5)
+    assert.notThat(pianoBechstein.estaAfinado())
+  }
+  test "El costo de un piano en una habitacion con un ancho grande es costoso" {
+    pianoBechstein.anchoHabitacion(5)
+    pianoBechstein.largoHabitacion(5)
+    assert.equals(10,pianoBechstein.costo())
+  }
+  test "El piano es valioso en una habitacion grande" {
+    pianoBechstein.anchoHabitacion(5)
+    pianoBechstein.largoHabitacion(5)
+    assert.that(pianoBechstein.esValioso())
+  }
+  test "El piano no es valioso en una habitacion chica" {
+    pianoBechstein.anchoHabitacion(4)
+    pianoBechstein.largoHabitacion(5)
+    assert.notThat(pianoBechstein.esValioso())
+  }
+}
+
+describe "tests Violin Stagg" {
+  test "el violin con una cantidad nula de tremolos esta afinado" {
+    assert.that(violinStagg.estaAfinado())
+  }
+  test "el violin con una cantidad alta de tremolos pero debajo del limite esta afinado" {
+    violinStagg.cantidadTremolos(9)
+    assert.that(violinStagg.estaAfinado())
+  } 
+  test "el violin con una cantidad alta de tremolos en el limite, no esta afinado" {
+    violinStagg.cantidadTremolos(10)
+    assert.notThat(violinStagg.estaAfinado())
+  } 
+  test "el violin sin tremolos tiene un costo elevado" {
+    assert.equals(20,violinStagg.costo())
+  } 
+  test "el violin con pocos tremolos tiene un costo elevado" {
+    violinStagg.cantidadTremolos(2)
+    assert.equals(18,violinStagg.costo())
+  } 
+  test "el violin con muchos tremolos tiene el costo minimo" {
+    violinStagg.cantidadTremolos(10)
+    assert.equals(15,violinStagg.costo())
+  } 
+  test "el violin con una pintura valiosa, es valioso" {
+    assert.that(violinStagg.esValioso())
+  }
+  test "el violin con una pintura no valiosa, no es valioso" {
+    violinStagg.pintura("latex satinado")
+    assert.notThat(violinStagg.esValioso())
+  } 
+}
+
+describe "test Johann" {
+  test "johann es feliz con un instrumento caro" {
+    johann.instrumento(trompetaJupiter)
+    assert.that(johann.esFeliz())
+  }
+  test "johann no es feliz con un instrumento no caro" {
+    violinStagg.cantidadTremolos(0)
+    johann.instrumento(violinStagg)
+    assert.notThat(johann.esFeliz())
+  } 
+}
+
+describe "tests Wolfgang" {
+  test "wolfgang es feliz si johann tiene un instrumento caro" {
+    johann.instrumento(trompetaJupiter)
+    assert.that(wolfgang.esFeliz())
+  }
+  test "wolfgang no es feliz si johann tiene un instrumento que no es caro" {
+    johann.instrumento(violinStagg)
+    assert.notThat(wolfgang.esFeliz())
+  }
+}
+
+describe "tests Giuseppe" {
+  test "Giuseppe es feliz con un instrumento afinado" {
+    giuseppe.instrumento(guitarraFenderStratocaster)
+    assert.that(giuseppe.esFeliz())
+  }
+  test "Giuseppe no es feliz con un instrumento que no esta afinado" {
+    pianoBechstein.anchoHabitacion(1)
+    pianoBechstein.largoHabitacion(1)
+    giuseppe.instrumento(pianoBechstein)
+    assert.notThat(giuseppe.esFeliz())
+  }
+}
+
+describe "tests Maddalena" {
+  test "Maddalena es feliz con un instrumento con costo par" {
+    maddalena.instrumento(violinStagg)
+    assert.that(maddalena.esFeliz())
+  }
+  test "Maddalena no es feliz con un instrumento con costo impar" {
+    violinStagg.hacerTremolo()
+    maddalena.instrumento(violinStagg)
+    assert.notThat(maddalena.esFeliz())
+  }
+}
+
+describe "tests Asociacion Musical" {
+  test "Una asociacion con musicos felices y no felices debe devolver la lista de los felices" {
+    johann.instrumento(violinStagg)
+    giuseppe.instrumento(guitarraFenderStratocaster)
+    maddalena.instrumento(violinStagg)
+    asociacionMusical.agregarMiembro(johann)
+    asociacionMusical.agregarMiembro(wolfgang)
+    asociacionMusical.agregarMiembro(giuseppe)
+    asociacionMusical.agregarMiembro(maddalena)
+    assert.equals(asociacionMusical.musicosFelices(),#{giuseppe,maddalena})
+  }
 }
