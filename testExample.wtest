@@ -53,6 +53,7 @@ describe "tests Trompeta Jupiter" {
 }
 
 describe "tests Piano Bechstein" {
+
   test "un piano en una habitacion grande esta afinado" {
     pianoBechstein.anchoHabitacion(5)
     pianoBechstein.largoHabitacion(5)
@@ -64,9 +65,10 @@ describe "tests Piano Bechstein" {
     assert.notThat(pianoBechstein.estaAfinado())
   }
   test "El costo de un piano en una habitacion con un ancho grande es costoso" {
+    pianoBechstein.numeroRandom(generadorEaxactoImpar)
     pianoBechstein.anchoHabitacion(5)
     pianoBechstein.largoHabitacion(5)
-    assert.equals(10,pianoBechstein.costo())
+    assert.equals(37,pianoBechstein.costo())
   }
   test "El piano es valioso en una habitacion grande" {
     pianoBechstein.anchoHabitacion(5)
@@ -172,3 +174,43 @@ describe "tests Asociacion Musical" {
     assert.equals(asociacionMusical.musicosFelices(),#{giuseppe,maddalena})
   }
 }
+
+describe "tests musicos genericos" {
+  const pepote = new Musico(prefiereFamilia = "cuerda", instrumento = violinStagg)
+  const pepon = new Musico(prefiereFamilia = "cuerda", instrumento = trompetaJupiter)
+  test "un musico es experto si su preferencia de familia coincide con la del instrumento" {
+    assert.that(pepote.esExperto())
+  }
+  test "un musico no es experto si su preferencia de familia no coincide con la del instrumento" {
+    assert.notThat(pepon.esExperto())
+  }
+  test "un musico es feliz si su instrumento es copado" {
+    assert.that(pepon.esFeliz())
+  }
+  test "un musico no es feliz si su instrumento no es copado" {
+    trompetaJupiter.sordina(false)
+    assert.that(pepon.esFeliz())
+  }
+  test "un musico no es feliz cualquiera de los instrumentos que no son copados" {
+    pepon.instrumento(violinStagg)
+    assert.notThat(pepon.esFeliz())
+
+    pepon.instrumento(guitarraFenderStratocaster)
+    assert.notThat(pepon.esFeliz())
+  }
+  test "un musico es feliz si tiene un piano en una habitacion grande " {
+    pianoBechstein.anchoHabitacion(7)
+    pepon.instrumento(pianoBechstein)
+    assert.that(pepon.esFeliz())
+  }
+  test "un musico no es feliz si tiene un piano en una habitacion pequenia " {
+    pianoBechstein.anchoHabitacion(3)
+    pepon.instrumento(pianoBechstein)
+    assert.notThat(pepon.esFeliz())
+  }
+  test "un músico de percusión no es feliz con instrumento de cuerdas" {
+    const musico = new Musico(instrumento = guitarraFenderStratocaster, prefiereFamilia = "percusion")
+    assert.notThat(musico.esFeliz())
+    }
+}
+
